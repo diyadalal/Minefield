@@ -1,0 +1,119 @@
+package mvc;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+// AppPanel is the MVC controller
+public class AppPanel extends JPanel implements Subscriber, ActionListener {
+
+    protected Model model;
+    protected AppFactory factory;
+    protected View view;
+    protected JPanel controlPanel;
+    private JFrame frame;
+    public static int FRAME_WIDTH = 800;
+    public static int FRAME_HEIGHT = 660;
+
+    public AppPanel(AppFactory factory) {
+        this.factory = factory;
+        this.model = factory.makeModel();
+        this.model.subscribe(this);
+        this.view = factory.makeView(model);
+
+        frame = new JFrame();  
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setLayout(new BorderLayout());  
+        add(view, BorderLayout.CENTER);
+
+        controlPanel = new JPanel();
+        add(controlPanel, BorderLayout.SOUTH);
+
+        Container cp = frame.getContentPane();
+        cp.add(this);
+
+        frame.setJMenuBar(createMenuBar());
+        frame.setTitle(factory.getTitle());
+        frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+    }
+
+    public void display() {
+        frame.setVisible(true);
+    }
+
+    public void update() {
+        repaint();
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model newModel) {
+        if (this.model != null) {
+            this.model.unsubscribe(this);
+        }
+        this.model = newModel;
+        this.model.subscribe(this);
+
+        // view updates
+        view.setModel(this.model);
+        model.changed();
+    }
+
+    protected JMenuBar createMenuBar() {
+        JMenuBar result = new JMenuBar();
+        JMenu fileMenu = Utilities.makeMenu("File", new String[]{"New", "Save", "SaveAs", "Open", "Quit"}, this);
+        result.add(fileMenu);
+
+        JMenu editMenu = Utilities.makeMenu("Edit", factory.getEditCommands(), this);
+        result.add(editMenu);
+
+        JMenu helpMenu = Utilities.makeMenu("Help", new String[]{"About", "Help"}, this);
+        result.add(helpMenu);
+
+        return result;
+    }
+
+    public void actionPerformed(ActionEvent ae) {
+        try {
+            String cmmd = ae.getActionCommand();
+
+            if (cmmd.equals("Save")) {
+                Utilities.save(model, false);
+            } else if (cmmd.equals("SaveAs")) {
+                Utilities.save(model, true);
+            } else if (cmmd.equals("Open")) {
+                Model newModel = Utilities.open(model);
+                if (newModel != null) setModel(newModel);
+            } else if (cmmd.equals("New")) {
+                Utilities.saveChanges(model);
+                setModel(factory.makeModel());
+                model.setUnsavedChanges(false);
+            } else if (cmmd.equals("Quit")) {
+                Utilities.saveChanges(model);
+                System.exit(0);
+            } else if (cmmd.equals("About")) {
+                Utilities.inform(factory.about());
+            } else if (cmmd.equals("Help")) {
+                Utilities.inform(factory.getHelp());
+            }
+            else {
+                Command command = factory.makeEditCommand(model, cmmd, this);
+                if (command != null) {
+                    command.execute();
+                } else {
+                    System.out.println("Unknown command: " + cmmd);
+                }
+
+            }
+        } catch (Exception e) {
+            handleException(e);
+        }
+    }
+
+    protected void handleException(Exception e) {
+        Utilities.error(e);
+    }
+}
