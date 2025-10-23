@@ -6,3 +6,4 @@ Randomized mine placement for varied outcomes each run.
 Configurable parameters such as field size, agent count, and mine density.
 Extendable framework for adding new behaviors or rules.
 Visualization using the SimStation framework to observe agent movement and survival.
+
