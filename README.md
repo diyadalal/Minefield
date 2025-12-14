@@ -1,9 +1,59 @@
-Minefield is a Java-based simulation game. It models agents navigating a field filled with hidden mines, testing decision-making and movement strategies within a simulated environment.
+# Minefield
 
-Features:
-Agent-based simulation where entities navigate a minefield.
-Randomized mine placement for varied outcomes each run.
-Configurable parameters such as field size, agent count, and mine density.
-Extendable framework for adding new behaviors or rules.
-Visualization using the SimStation framework to observe agent movement and survival.
+Minefield is a Java-based implementation of the classic **Minesweeper** game, developed with an emphasis on **object-oriented design**, **clean architecture**, and **interactive GUI development**. The project follows the **Model–View–Controller (MVC)** pattern to clearly separate game logic, user interface, and control flow.
 
+---
+
+## Features
+
+- Fully playable Minesweeper-style game with an interactive graphical interface
+- Randomized mine placement and dynamic board generation
+- Recursive cell-reveal logic for uncovering contiguous empty regions
+- Real-time UI updates using Java Swing
+
+---
+
+## Architecture
+
+The application follows the **Model–View–Controller (MVC)** architecture:
+
+- **Model**
+  - Manages game state, mine placement, adjacency calculations, and win/loss conditions
+- **View**
+  - Renders the graphical interface and responds to model updates
+- **Controller**
+  - Handles user interactions and translates UI actions into model updates
+
+---
+
+## Tech Stack
+
+- **Language:** Java  
+- **UI Framework:** Java Swing  
+- **Design Patterns:** MVC, Command, Factory  
+- **Testing:** JUnit  
+
+---
+
+## How to Run
+
+1. Clone the repository:
+
+    ```
+    git clone https://github.com/diyadalal/Minefield.git
+    cd Minefield
+    ```
+
+Alternatively, you may download the project as a ZIP file and extract it locally.
+
+
+### Step 2: Open the Project
+
+Open the project in a Java IDE such as **IntelliJ IDEA** or **Eclipse**.
+
+
+### Step 3: Run the Application
+
+Open and Run:
+- File path: `src/minefield/MinefieldPanel.java`
+---
